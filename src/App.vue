@@ -1,32 +1,63 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+    <main>
+        <h1>Synchronize state with query params</h1>
+        <p>Params in data(): <code>{{ params }}</code></p>
+        <input v-for="(value, key) of params" v-model="params[key]" :placeholder="key" :key="key">
+        <button @click="generateLinkMethod()">Generate link</button>
+        <br>
+        <hr>
+        <a :href="generatedLink">{{ generatedLink }}</a>
+    </main>
 </template>
 
+<script>
+import {coreQueryParams} from "@/config";
+import {createLinkFromState} from "@/router";
+
+export default {
+    name: 'App',
+
+    data() {
+        return {
+            generatedLink: 'example.com',
+            params: Object.keys(coreQueryParams).reduce((p, c) => ({...p, [c]: null}), {})
+        };
+    },
+
+    methods: {
+        generateLinkMethod() {
+            this.generatedLink = createLinkFromState(this.$route.name, this.params);
+        }
+    }
+}
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-#nav {
-  padding: 30px;
+body, html {
+    margin: 0;
+    padding: 0;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+body {
+    height: 100vh;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
+main {
+    > * {
+        margin: 0.5rem 1rem;
     }
-  }
+}
+
+a {
+    font-size: 22px;
 }
 </style>
